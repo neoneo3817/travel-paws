@@ -87,7 +87,7 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
 
 /* ---------- 하단 탭(출발 안내판) ---------- */
 .nav{position:fixed;bottom:0;left:0;right:0;background:#070b14;display:flex;justify-content:space-around;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));border-top:2px solid #1c2740}
-.nav button{flex:1;margin:0 3px;padding:12px 0;border:0;border-radius:8px;background:none;color:var(--amber);font:600 13px var(--mono);letter-spacing:2px;opacity:.55;cursor:pointer}
+.nav button{flex:1;margin:0 2px;padding:12px 0;border:0;border-radius:8px;background:none;color:var(--amber);font:600 12px var(--mono);letter-spacing:1px;opacity:.55;cursor:pointer}
 .nav button.on{background:var(--amber);color:#070b14;opacity:1}
 .fab{position:fixed;right:22px;bottom:88px;width:62px;height:62px;border-radius:50%;border:0;background:var(--amber);color:#070b14;font-size:34px;line-height:1;box-shadow:0 8px 18px rgba(0,0,0,.45);cursor:pointer}
 
@@ -163,7 +163,37 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
 @keyframes burst{0%{transform:translate(-50%,-50%) scale(.2) rotate(0);opacity:0}15%{opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1) rotate(var(--r));opacity:0}}
 @keyframes fall{to{transform:translate(var(--sx),112vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){.wcard,.wemo,.wemo2,.wname,.mas,.m-prop{animation:none}}
-.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:8px 14px;border-radius:12px;font-size:13px;display:none;z-index:50;white-space:nowrap}
+.sp-top{display:flex;justify-content:space-between;align-items:center}
+.mini{border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:999px;padding:6px 12px;font:600 11px var(--mono);cursor:pointer}
+.sp-sum{margin:14px 0 4px;padding:14px 16px;border-radius:14px;background:var(--ink);color:#fff;display:flex;justify-content:space-between;gap:12px}
+.sp-sum i{display:block;font:400 10px var(--mono);letter-spacing:1px;opacity:.6;margin-bottom:4px}
+.sp-sum b{font:600 20px var(--mono);color:var(--amber)}
+.sp-sum small{display:block;font:400 11px var(--mono);opacity:.7;margin-top:2px}
+.sp-h{font:500 10px var(--mono);letter-spacing:2px;opacity:.6;margin:20px 0 4px}
+.sp-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--rule)}
+.sp-row .nm{font:600 15px var(--mono)}
+.sp-row small{display:block;font:400 11px var(--mono);color:var(--mute);margin-top:3px}
+.sp-row .bal{font:600 15px var(--mono);text-align:right}
+.sp-row .bal small{font-weight:400}
+.pos{color:#1f7a4d}.neg{color:var(--red)}
+.sp-pay{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;margin-top:10px;border-radius:12px;background:#fff;border:1.5px dashed var(--rule2)}
+.sp-pay .who{font:600 15px var(--mono)}
+.sp-pay .who span{opacity:.5;margin:0 6px}
+.sp-pay .amt{font:600 17px var(--mono);text-align:right}
+.sp-pay .amt small{display:block;font:400 11px var(--mono);color:var(--mute);margin-top:2px}
+.modal{max-height:90vh;overflow:auto}
+input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;accent-color:var(--ink);flex:none}
+.chk{display:flex;align-items:center;gap:10px;padding:12px 0 4px;font-size:15px;cursor:pointer}
+.pbox{margin-top:6px;padding:8px 14px;border-radius:10px;background:#fff;border:1px solid var(--rule)}
+.pbox small{display:block;font:400 11px var(--mono);color:var(--mute);padding-top:4px}
+.pbox .chk{padding:10px 0}
+.tl a.pl{color:inherit;text-decoration:underline;text-decoration-style:dotted;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:var(--navy2)}
+.tl a.pl:active{opacity:.6}
+.bk{margin-top:16px}
+.bk small{display:block;font:400 11px var(--mono);color:var(--mute);margin-top:10px;line-height:1.5}
+#memoCard{background-size:cover;background-position:center}
+#memoCard.hasbg #memoText{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);color:#fff;padding:8px 14px;border-radius:12px;font-size:13px;display:none;z-index:70;max-width:88vw;text-align:center;line-height:1.4}
 @media (prefers-reduced-motion:reduce){.sync.spin{animation:none}.cell.flip{animation:none}}
 </style></head><body>
 <div id="toastEl" class="toast"></div>
@@ -211,7 +241,17 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
   <div class="receipt" id="logs"></div>
  </div>
 
- <div id="memo" class="tab"><div class="card"><textarea id="memoText" rows="10"></textarea></div></div>
+ <div id="split" class="tab"><div class="card">
+  <div class="sp-top"><b>정산 (N빵)</b><button class="mini" onclick="sync()">↻ 새로고침</button></div>
+  <div class="sp-sum" id="spSum"></div>
+  <div class="sp-h">PER PERSON</div>
+  <div id="spList"></div>
+  <div class="sp-h">PAY BACK</div>
+  <div id="spPay"></div>
+  <button class="btn" onclick="copySplit()">정산 내용 복사</button>
+ </div></div>
+
+ <div id="memo" class="tab"><div class="card" id="memoCard"><textarea id="memoText" rows="10"></textarea></div></div>
 
  <div id="fx" class="tab"><div class="card">
   <div class="row" style="display:flex;justify-content:space-between;align-items:center"><b>환율 계산기</b><small id="rateStamp" style="color:#6b7690"></small></div>
@@ -236,12 +276,12 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
    <div class="tlw">
     <div class="pin"><span class="pinc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg></span><b>상하이</b></div>
     <ul class="tl">
-     <li>푸동공항 도착 &amp; 숙소 체크인</li>
-     <li>🥟 라이라이샤오롱 또는 가가탕포</li>
-     <li>난징동루 쇼핑 (POP MART / MINISO)</li>
-     <li>🧋 HEYTEA</li>
-     <li>🚢 황푸강 유람선</li>
-     <li>🌃 와이탄 야경</li>
+     <li><a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=Shanghai%20Pudong%20International%20Airport" target="_blank" rel="noopener">푸동공항</a> 도착 &amp; 숙소 체크인</li>
+     <li>🥟 <a class="pl" href="https://surl.amap.com/1KVCQOrw89MK" target="_blank" rel="noopener">라이라이샤오롱</a> 또는 <a class="pl" href="https://surl.amap.com/UhQXVqy1b0aE" target="_blank" rel="noopener">가가탕포</a></li>
+     <li><a class="pl" href="https://surl.amap.com/1cpWHiTg1j1x1" target="_blank" rel="noopener">난징동루</a> 쇼핑 (<a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=POP%20MART%20Nanjing%20East%20Road%20Shanghai" target="_blank" rel="noopener">POP MART</a> / <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=MINISO%20Nanjing%20East%20Road%20Shanghai" target="_blank" rel="noopener">MINISO</a>)</li>
+     <li>🧋 <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=HEYTEA%20Shanghai" target="_blank" rel="noopener">HEYTEA</a></li>
+     <li>🚢 <a class="pl" href="https://surl.amap.com/1kumwooKEb2Y" target="_blank" rel="noopener">황푸강 유람선</a></li>
+     <li>🌃 <a class="pl" href="https://surl.amap.com/1if2RkxITa9P" target="_blank" rel="noopener">와이탄</a> 야경</li>
     </ul>
    </div>
   </div>
@@ -251,12 +291,12 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
     <div class="pin"><span class="pinc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg></span><b>상하이</b></div>
     <ul class="tl">
      <li>아침 : 훈둔 또는 지엔빙</li>
-     <li>🇰🇷 대한민국 임시정부</li>
-     <li>🏘 신천지</li>
-     <li>🍝 IL TEATRO (점심)</li>
-     <li>🌳 우캉루 &amp; 안푸루 산책</li>
-     <li>☕ 13DE MARZO</li>
-     <li>🥟 점도덕 (저녁)</li>
+     <li>🇰🇷 <a class="pl" href="https://surl.amap.com/1iuZxcNY112nH" target="_blank" rel="noopener">대한민국 임시정부</a></li>
+     <li>🏘 <a class="pl" href="https://surl.amap.com/1JSfcUpkx5dG" target="_blank" rel="noopener">신천지</a></li>
+     <li>🍝 <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=IL%20TEATRO%20Shanghai" target="_blank" rel="noopener">IL TEATRO</a> (점심)</li>
+     <li>🌳 <a class="pl" href="https://surl.amap.com/1IVNzK261bgMU" target="_blank" rel="noopener">우캉루</a> &amp; <a class="pl" href="https://surl.amap.com/1m2yjwiqYcFh" target="_blank" rel="noopener">안푸루</a> 산책</li>
+     <li>☕ <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=13%20de%20Marzo%20Shanghai" target="_blank" rel="noopener">13DE MARZO</a></li>
+     <li>🥟 <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=%E7%82%B9%E9%83%BD%E5%BE%B7%20%E4%B8%8A%E6%B5%B7" target="_blank" rel="noopener">점도덕</a> (저녁)</li>
     </ul>
    </div>
   </div>
@@ -266,10 +306,10 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
     <div class="pin"><span class="pinc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg></span><b>상하이</b></div>
     <ul class="tl">
      <li>💆‍♀️ 헤드스파</li>
-     <li>🎭 오페라의 유령<small>14:00 · 상하이대극장</small></li>
-     <li>🏮 예원 야경</li>
-     <li>🍽️ 제시레스토랑</li>
-     <li>🍢 헌지우이치엔 양꼬치</li>
+     <li>🎭 오페라의 유령<small>14:00 · <a class="pl" href="https://surl.amap.com/1kUFayB05gSt" target="_blank" rel="noopener">상하이대극장</a></small></li>
+     <li>🏮 <a class="pl" href="https://surl.amap.com/2UnFbNzY14cBW" target="_blank" rel="noopener">예원</a> 야경</li>
+     <li>🍽️ <a class="pl" href="https://surl.amap.com/1ldtmgYSl7pQ" target="_blank" rel="noopener">제시레스토랑</a></li>
+     <li>🍢 <a class="pl" href="https://surl.amap.com/EveEFqy130av" target="_blank" rel="noopener">헌지우이치엔 양꼬치</a></li>
     </ul>
    </div>
   </div>
@@ -278,21 +318,26 @@ textarea,input{width:100%;padding:12px;border:1px solid #c3cbdc;border-radius:10
    <div class="tlw">
     <div class="pin"><span class="pinc"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg></span><b>상하이 → 인천</b></div>
     <ul class="tl">
-     <li>아침 : 못 먹은 메뉴 먹기 😆<small>(가가탕포 / 훈둔 / 지엔빙 중 선택)</small></li>
-     <li>🛍 RT마트</li>
-     <li>🛍 화이트래빗</li>
-     <li>🛍 칭즈</li>
+     <li>아침 : 못 먹은 메뉴 먹기 😆<small>(<a class="pl" href="https://surl.amap.com/UhQXVqy1b0aE" target="_blank" rel="noopener">가가탕포</a> / 훈둔 / 지엔빙 중 선택)</small></li>
+     <li>🛍 <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=RT-Mart%20Shanghai" target="_blank" rel="noopener">RT마트</a></li>
+     <li>🛍 <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=%ED%99%94%EC%9D%B4%ED%8A%B8%EB%9E%98%EB%B9%97%20%EC%83%81%ED%95%98%EC%9D%B4" target="_blank" rel="noopener">화이트래빗</a></li>
+     <li>🛍 <a class="pl" href="https://www.google.com/maps/search/?api=1&amp;query=%EC%B9%AD%EC%A6%88%20%EC%83%81%ED%95%98%EC%9D%B4" target="_blank" rel="noopener">칭즈</a></li>
      <li>공항 이동 ✈️</li>
     </ul>
    </div>
   </div>
- </div></div>
+ </div>
+ <div class="card bk"><button class="btn" style="margin-top:0" onclick="backupData()">데이터 백업 (txt 다운로드)</button><small>서버에 저장된 지출 전체를 txt 파일로 내려받습니다. 카톡 같은 앱 안 브라우저에서는 다운로드가 막혀서 내용이 복사됩니다.</small></div></div>
 </div>
 
-<button class="fab" onclick="expense.style.display='flex'" aria-label="새 지출">+</button>
-<div id="expense" class="overlay"><div class="modal"><h3>새 지출</h3><textarea id="exp" rows="7" placeholder="사과 3위안&#10;귤 5위안&#10;Hotel 140위안"></textarea><button class="btn" onclick="saveExpenses()">Save</button></div></div>
+<button class="fab" onclick="openExpense()" aria-label="새 지출">+</button>
+<div id="expense" class="overlay"><div class="modal"><h3>새 지출</h3><textarea id="exp" rows="7" placeholder="사과 3위안&#10;귤 5위안&#10;Hotel 140위안"></textarea>
+<label class="chk"><input type="checkbox" id="partial" onchange="togglePartial()"> 2명이서만 정산</label>
+<div id="partialBox" class="pbox" style="display:none"><small>나와 함께 나눌 사람을 선택하세요</small><div id="partialList"></div></div>
+<button class="btn" onclick="saveExpenses()">Save</button></div></div>
 <div class="nav">
  <button class="on" data-t="pass" onclick="tab('pass')">PASS</button>
+ <button data-t="split" onclick="tab('split')">SPLIT</button>
  <button data-t="memo" onclick="tab('memo')">MEMO</button>
  <button data-t="fx" onclick="tab('fx')">CURR.</button>
  <button data-t="info" onclick="tab('info')">INFO</button>
@@ -319,11 +364,20 @@ function fmtE(v){return '¥'+v.toLocaleString('en-US',{minimumFractionDigits:2,m
 function fmtName(n){const p=n.split(' ');return p.length>1?p.slice(1).join(' ')+'/'+p[0]:n}
 
 /* ---------- 저장소 (Supabase REST / 로컬 대체) ---------- */
+async function fail(r){let t='';try{t=await r.text()}catch(e){}const err=new Error('HTTP '+r.status);err.info='HTTP '+r.status+' '+t;console.error(err.info);throw err}
+function hint(e){
+  const m=(e&&e.info)||String((e&&e.message)||e);
+  if(/PGRST205|42P01|does not exist|find the table/i.test(m))return 'expenses 테이블이 없어요 (SQL 실행 필요)';
+  if(/PGRST204|split_with/i.test(m))return 'split_with 열이 없어요 (SQL 실행 필요)';
+  if(/42501|row-level security|permission denied|HTTP 40[13]/i.test(m))return '권한 오류 (SQL의 grant/정책 확인)';
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m))return '네트워크 오류';
+  return m.replace(/\s+/g,' ').slice(0,90);
+}
 const H={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
 async function fetchAll(){
   if(!REMOTE)return JSON.parse(lsGet('exp_sh')||'[]');
   const r=await fetch(SUPABASE_URL+'/rest/v1/expenses?select=*&order=id.asc',{headers:H});
-  if(!r.ok)throw new Error(r.status);
+  if(!r.ok)await fail(r);
   return r.json();
 }
 async function insertRows(rows){
@@ -334,19 +388,19 @@ async function insertRows(rows){
     lsSet('exp_sh',JSON.stringify(all));return;
   }
   const r=await fetch(SUPABASE_URL+'/rest/v1/expenses',{method:'POST',headers:{...H,Prefer:'return=minimal'},body:JSON.stringify(rows)});
-  if(!r.ok)throw new Error(r.status);
+  if(!r.ok)await fail(r);
 }
 async function deleteRow(id){
   if(!REMOTE){lsSet('exp_sh',JSON.stringify(JSON.parse(lsGet('exp_sh')||'[]').filter(x=>x.id!==id)));return}
   const r=await fetch(SUPABASE_URL+'/rest/v1/expenses?id=eq.'+id,{method:'DELETE',headers:H});
-  if(!r.ok)throw new Error(r.status);
+  if(!r.ok)await fail(r);
 }
 
 /* ---------- 동기화 ---------- */
 async function sync(quiet){
   if(busy)return;busy=true;syncBtn.classList.add('spin');
-  try{expenses=await fetchAll();render(quiet!==true);if(quiet!==true)toast('동기화 완료')}
-  catch(e){toast('동기화 실패 · 네트워크/설정 확인')}
+  try{expenses=await fetchAll();render(quiet!==true);if(quiet!==true)toast('동기화 완료');if(REMOTE)modeInfo.innerText='SUPABASE · 연결됨'}
+  catch(e){toast('동기화 실패 · '+hint(e),5000);if(REMOTE)modeInfo.innerText='SUPABASE · 오류'}
   busy=false;syncBtn.classList.remove('spin');
 }
 
@@ -413,6 +467,52 @@ function welcome(){
 }
 function closeWelcome(){clearTimeout(wTimer);wel.style.display='none';wParts.innerHTML='';wRain.innerHTML=''}
 
+/* ---------- 정산 (N빵) ---------- */
+const KO={'RANKYUNG JUNG':'란경','SANGEUN KOH':'상은','JIHYUN CHOI':'지현'};
+let lastSplit=null;
+function won(v){return '₩'+(Math.round(v*RATE/10)*10).toLocaleString()}
+function renderSplit(per,tot){
+  const n=PAX.length,share=tot/n;
+  const owed={};PAX.forEach(x=>owed[x.n]=0);
+  expenses.forEach(x=>{
+    if(!(x.passenger in per))return;
+    const amt=parseFloat(x.amount)||0;
+    let who=Array.isArray(x.split_with)?x.split_with.filter(k=>k in owed):[];
+    if(!who.length)who=PAX.map(y=>y.n);
+    who.forEach(k=>owed[k]+=amt/who.length);
+  });
+  const rows=PAX.map(x=>({ko:KO[x.n]||x.n,paid:per[x.n],owed:owed[x.n],bal:per[x.n]-owed[x.n]}));
+  const cr=rows.filter(r=>r.bal>0.005).map(r=>({ko:r.ko,v:r.bal})).sort((a,b)=>b.v-a.v);
+  const db=rows.filter(r=>r.bal<-0.005).map(r=>({ko:r.ko,v:-r.bal})).sort((a,b)=>b.v-a.v);
+  const tr=[];let i=0,j=0;
+  while(i<db.length&&j<cr.length){
+    const m=Math.min(db[i].v,cr[j].v);
+    if(m>0.005)tr.push({from:db[i].ko,to:cr[j].ko,v:Math.round(m*100)/100});
+    db[i].v-=m;cr[j].v-=m;
+    if(db[i].v<0.005)i++;
+    if(cr[j].v<0.005)j++;
+  }
+  lastSplit={tot,share,rows,tr};
+  spSum.innerHTML='<div><i>총 지출</i><b>'+fmtE(tot)+'</b><small>'+won(tot)+'</small></div><div style="text-align:right"><i>1인당 평균</i><b>'+fmtE(share)+'</b><small>'+won(share)+'</small></div>';
+  spList.innerHTML=rows.map(r=>{
+    const b=r.bal>0.005?'<span class="pos">+'+fmtE(r.bal)+'<small>받을 돈</small></span>':r.bal<-0.005?'<span class="neg">-'+fmtE(-r.bal)+'<small>낼 돈</small></span>':'<span>딱 맞아요<small>정산 없음</small></span>';
+    return '<div class="sp-row"><div class="nm">'+esc(r.ko)+'<small>낸 돈 '+fmtE(r.paid)+' · 부담 '+fmtE(r.owed)+'</small></div><div class="bal">'+b+'</div></div>';
+  }).join('');
+  spPay.innerHTML=tot<=0?'<span class="empty">아직 정산할 지출이 없어요</span>':tr.length?tr.map(t=>'<div class="sp-pay"><div class="who">'+esc(t.from)+'<span>→</span>'+esc(t.to)+'</div><div class="amt">'+fmtE(t.v)+'<small>≈ '+won(t.v)+'</small></div></div>').join(''):'<span class="empty">정산할 금액이 없어요 🎉</span>';
+}
+function splitText(){
+  const L=lastSplit;if(!L||L.tot<=0)return '아직 정산할 지출이 없어요';
+  let t='🧾 상하이 여행 정산 (11/20~23)\n총 '+fmtE(L.tot)+' ('+won(L.tot)+')\n';
+  L.rows.forEach(r=>{t+='\n'+r.ko+' 낸 돈 '+fmtE(r.paid)+' / 부담 '+fmtE(r.owed)});
+  t+='\n\n'+(L.tr.length?L.tr.map(x=>'▶ '+x.from+' → '+x.to+' '+fmtE(x.v)+' (≈ '+won(x.v)+')').join('\n'):'정산할 금액 없음 🎉');
+  return t;
+}
+function copySplit(){
+  const t=splitText();
+  const fallback=()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();toast(ok?'복사했어요':'복사 실패')};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>toast('복사했어요')).catch(fallback);else fallback();
+}
+
 /* ---------- 화면 ---------- */
 function toggleTotal(){showKRW=!showKRW;render()}
 function tab(id){
@@ -431,6 +531,7 @@ function render(force){
     cats[x.category in cats?x.category:'other']+=amt;
   });
   const tot=PAX.reduce((t,x)=>t+per[x.n],0);
+  renderSplit(per,tot);
   setFlap(total,showKRW?'₩'+Math.round(tot*RATE).toLocaleString():fmtE(tot),force===true);
   if(cur){
     cname.innerText=fmtName(cur.n);camt.innerText=fmtE(per[cur.n]);
@@ -443,10 +544,16 @@ function render(force){
   other.querySelector('b').innerText=fmt(cats.other);
   logs.innerHTML='<div class="rh"><span>RECENT</span><span>'+expenses.length+' ITEMS</span></div>'+(expenses.length?expenses.slice().reverse().map(x=>{
     const mine=cur&&x.passenger===cur.n;
-    return '<div class="log"><div class="lt"><span class="ltx">'+esc(x.text)+'</span><small>'+esc(x.passenger.split(' ')[0])+' · '+esc((x.category||'other').toUpperCase())+'</small></div><div class="la"><b>'+fmtE(parseFloat(x.amount)||0)+'</b>'+(mine?'<button class="x" onclick="delExp('+x.id+')" aria-label="삭제">✕</button>':'')+'</div></div>';
+    return '<div class="log"><div class="lt"><span class="ltx">'+esc(x.text)+'</span><small>'+esc(x.passenger.split(' ')[0])+' · '+esc((x.category||'other').toUpperCase())+(Array.isArray(x.split_with)&&x.split_with.length?' · '+esc(x.split_with.map(n=>KO[n]||n).join('+'))+'만':'')+'</small></div><div class="la"><b>'+fmtE(parseFloat(x.amount)||0)+'</b>'+(mine?'<button class="x" onclick="delExp('+x.id+')" aria-label="삭제">✕</button>':'')+'</div></div>';
   }).join(''):'<span class="empty">아직 지출 기록이 없습니다. + 버튼으로 추가하세요.</span>');
 }
-function showPassenger(n){cur=PAX.find(x=>x.n===n);if(cur){drawBars(fmtName(cur.n));render()}}
+const MEMO_IMG={'SANGEUN KOH':'se.jpg','JIHYUN CHOI':'jh.jpg'};
+function setMemoBg(n){
+  const f=MEMO_IMG[n];
+  memoCard.classList.toggle('hasbg',!!f);
+  memoCard.style.backgroundImage=f?"linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,.12)),url('"+f+"')":'';
+}
+function showPassenger(n){cur=PAX.find(x=>x.n===n);if(cur){drawBars(fmtName(cur.n));setMemoBg(cur.n);render()}}
 function choose(el,n){
   document.querySelectorAll('.pick').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
@@ -468,16 +575,54 @@ function parseAmount(l){
   const all=l.match(/\d+(?:\.\d+)?/g);
   return all?parseFloat(all[all.length-1]):0;
 }
+function copyText(t,okmsg){
+  const fb=()=>{const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();toast(ok?okmsg:'복사 실패')};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(()=>toast(okmsg)).catch(fb);else fb();
+}
+async function backupData(){
+  let rows;
+  try{rows=await fetchAll()}catch(e){toast('백업 실패 · '+hint(e),5000);return}
+  const d=new Date(),pad=n=>String(n).padStart(2,'0');
+  const stamp=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'-'+pad(d.getHours())+pad(d.getMinutes());
+  const amt=x=>parseFloat(x.amount)||0;
+  const tot=rows.reduce((s,x)=>s+amt(x),0);
+  let t='상하이 여행 지출 백업\n저장 시각: '+d.toLocaleString('ko-KR')+'\n건수: '+rows.length+'건\n총 지출: ¥'+tot.toFixed(2)+'\n\n[인원별 낸 돈]\n';
+  PAX.forEach(x=>{t+=(KO[x.n]||x.n)+': ¥'+rows.filter(r=>r.passenger===x.n).reduce((s,r)=>s+amt(r),0).toFixed(2)+'\n'});
+  t+='\n[지출 목록]\n번호\t일시\t결제자\t분류\t금액(¥)\t내용\t정산대상\n';
+  rows.forEach(x=>{
+    const when=x.created_at?new Date(x.created_at).toLocaleString('ko-KR'):'';
+    const who=Array.isArray(x.split_with)&&x.split_with.length?x.split_with.map(n=>KO[n]||n).join('+'):'전원';
+    t+=[x.id,when,KO[x.passenger]||x.passenger,x.category,amt(x).toFixed(2),String(x.text).replace(/\s+/g,' '),who].join('\t')+'\n';
+  });
+  if(/KAKAOTALK|NAVER|Instagram|FBAN|FB_IAB|Line\//i.test(navigator.userAgent)){copyText(t,'앱 안에서는 다운로드가 막혀 복사했어요 · 메모에 붙여넣어 저장하세요');return}
+  const blob=new Blob(['\uFEFF'+t],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='travel-backup-'+stamp+'.txt';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+  toast('백업 파일을 저장했어요 ('+rows.length+'건)');
+}
+function openExpense(){
+  if(!cur)return;
+  partial.checked=false;partialBox.style.display='none';
+  partialList.innerHTML=PAX.filter(x=>x.n!==cur.n).map(x=>'<label class="chk"><input type="checkbox" value="'+x.n+'"> '+esc(KO[x.n]||x.n)+'</label>').join('');
+  expense.style.display='flex';
+}
+function togglePartial(){partialBox.style.display=partial.checked?'block':'none'}
 async function saveExpenses(){
   if(!cur){toast('사용자를 먼저 선택하세요');return}
-  const rows=exp.value.split('\n').filter(l=>l.trim()).map(l=>({passenger:cur.n,text:l.trim(),category:category(l),amount:parseAmount(l)}));
+  let sw=null;
+  if(partial.checked){
+    const picks=[...partialList.querySelectorAll('input:checked')].map(i=>i.value);
+    if(!picks.length){toast('함께 나눌 사람을 선택하세요');return}
+    if(picks.length+1<PAX.length)sw=[cur.n,...picks];
+  }
+  const rows=exp.value.split('\n').filter(l=>l.trim()).map(l=>{const r={passenger:cur.n,text:l.trim(),category:category(l),amount:parseAmount(l)};if(sw)r.split_with=sw;return r});
   if(!rows.length){expense.style.display='none';return}
-  try{await insertRows(rows)}catch(e){toast('저장 실패 · 다시 시도하세요');return}
+  try{await insertRows(rows)}catch(e){toast('저장 실패 · '+hint(e),5000);return}
   expense.style.display='none';exp.value='';
   sync(true);
 }
 async function delExp(id){
-  try{await deleteRow(id)}catch(e){toast('삭제 실패 · 다시 시도하세요');return}
+  try{await deleteRow(id)}catch(e){toast('삭제 실패 · '+hint(e),5000);return}
   sync(true);
 }
 
