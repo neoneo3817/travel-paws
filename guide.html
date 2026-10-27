@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#11131a">
+<title>Passengers — Travel Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+@font-face{font-family:'Amsterdam';src:url('https://cdn.jsdelivr.net/gh/fontbee/font@main/NAVER/Amsterdam.woff') format('woff');font-weight:400;font-style:normal;font-display:swap;}
+
+/* Amsterdam handwriting for Korean-facing copy; retain the airport-display fonts for English labels and numeric UI. */
+.intro h1,.intro-copy,.start,
+section h2,.description,.note,
+.finish h2,.finish p {
+  font-family:'Amsterdam',Manrope,'Noto Sans KR',sans-serif;
+  font-weight:400;
+  letter-spacing:normal;
+}
+.intro h1 { letter-spacing:-.035em; }
+section h2 { letter-spacing:-.025em; line-height:1.28; }
+.intro h1 span,.finish h2 span { font-family:'Amsterdam',Manrope,'Noto Sans KR',sans-serif; }
+.kicker,.eyebrow,.brand,.counter,.finish-ticket strong,.step-number,.number,.tag,.mono {
+  font-family:'DM Mono',monospace;
+}
+
+:root{--night:#101218;--panel:#191c25;--panel2:#222630;--line:#373b47;--ivory:#f6f2e9;--muted:#b4b5bf;--gold:#e2c98f;--mint:#a5e4bb;--lav:#b7b5ef}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-snap-type:none;overscroll-behavior-y:auto}
+body{margin:0;background:var(--night);color:var(--ivory);font-family:Manrope,"Noto Sans KR",sans-serif}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(ellipse at 80% 0%,rgba(117,92,134,.2),transparent 36%),radial-gradient(ellipse at 0% 90%,rgba(175,139,81,.1),transparent 35%)}
+button{font:inherit}
+.page{max-width:1040px;margin:auto;padding:0 28px}
+.masthead{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 0;background:rgba(16,18,24,.9);backdrop-filter:blur(16px);border-bottom:1px solid #353741}
+.brand{font-size:12px;font-weight:800;letter-spacing:.2em}.brand span{color:var(--gold)}
+.progress-wrap{display:flex;align-items:center;gap:12px;color:var(--muted);font:11px "DM Mono",monospace;letter-spacing:.1em}
+.progress{width:110px;height:3px;background:#393b45;overflow:hidden}.progress-bar{width:16.666%;height:100%;background:var(--gold);transition:width .4s}
+.intro{min-height:74vh;display:flex;flex-direction:column;justify-content:center;padding:65px 0 80px;scroll-margin-top:84px}
+.kicker{font:12px "DM Mono",monospace;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:22px}
+h1{font-size:clamp(3.4rem,9vw,7.4rem);line-height:.94;letter-spacing:-.075em;margin:0;font-weight:600}
+h1 span{display:block;color:var(--gold);margin-top:12px;font-family:'Amsterdam',Manrope,'Noto Sans KR',sans-serif;font-weight:400;letter-spacing:-.02em}
+.intro-copy{font-size:clamp(1.15rem,2.5vw,1.55rem);line-height:1.75;color:#d4d2d0;max-width:620px;margin:32px 0 38px;word-break:keep-all}
+.intro-copy strong{color:var(--ivory);font-weight:600}
+.start{display:inline-flex;align-items:center;gap:16px;width:max-content;border:1px solid #6e654f;border-radius:999px;padding:14px 20px;color:var(--gold);background:#201f20;cursor:pointer;font-size:14px}
+.start b{font-size:20px;font-weight:400;transition:transform .2s}.start:hover b{transform:translateY(4px)}
+.cards{padding-bottom:60px}
+.guide-card{min-height:78vh;display:flex;align-items:center;scroll-margin-top:84px;padding:54px 0;border-top:1px solid #3b3b44}
+.card-inner{width:100%;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:clamp(28px,7vw,90px);align-items:center}
+.card-copy{padding:24px 0}
+.eyebrow{display:flex;align-items:center;gap:12px;font:12px "DM Mono",monospace;letter-spacing:.18em;color:var(--gold);margin-bottom:22px}
+.eyebrow span{color:#777984}
+h2{font-size:clamp(2rem,4.7vw,4rem);letter-spacing:-.06em;line-height:1.16;font-weight:600;margin:0 0 24px;word-break:keep-all}
+.finish h2 span{font-family:'Amsterdam',Manrope,'Noto Sans KR',sans-serif;font-weight:400;letter-spacing:-.015em}
+.description{font-size:clamp(1.08rem,2vw,1.35rem);line-height:1.9;color:#d2d1d4;word-break:keep-all;margin:0}
+.description strong{color:var(--ivory);font-weight:600}
+.note{font-size:1rem;color:var(--muted);line-height:1.8;margin-top:14px;word-break:keep-all}
+.visual{min-height:330px;position:relative;display:flex;align-items:center;justify-content:center;border:1px solid #3e414b;border-radius:24px;overflow:hidden;background:linear-gradient(145deg,#222630,#171922 70%);padding:30px}
+.visual:before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(226,201,143,.07);filter:blur(2px);top:-100px;right:-60px}
+.visual-symbol{position:relative;display:flex;align-items:center;justify-content:center;width:150px;height:150px;border-radius:38px;border:1px solid #74664b;background:linear-gradient(145deg,#343039,#211f26);color:var(--gold);font-size:78px;font-weight:400;box-shadow:0 20px 55px #0004}
+.visual-caption{position:absolute;bottom:24px;left:26px;right:26px;display:flex;justify-content:space-between;gap:12px;color:#9e9eaa;font:10px "DM Mono",monospace;letter-spacing:.12em}
+.demo{position:relative;width:100%;max-width:340px;border:1px solid #515461;border-radius:18px;background:#11141b;padding:22px;box-shadow:0 20px 45px #0004}
+.demo-label{font:10px "DM Mono",monospace;color:#9b9ba8;letter-spacing:.14em;margin-bottom:18px}
+.demo-total{display:inline-flex;align-items:center;gap:10px;max-width:100%;font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.06em;border:0;padding:0;margin:0;background:transparent;color:inherit;text-align:left;cursor:pointer;touch-action:manipulation}.demo-total:focus-visible{outline:2px solid var(--gold);outline-offset:6px;border-radius:6px}.currency-sync{font-size:.48em;color:var(--gold);letter-spacing:0;flex:0 0 auto;transition:transform .35s}.demo-total:active .currency-sync{transform:rotate(180deg)}
+.demo-sub{font-size:12px;color:#a8a8b3;margin-top:5px}
+.demo-action{margin-top:24px;padding:13px;border-radius:10px;background:#e2c98f;color:#171820;text-align:center;font-size:14px;font-weight:700}
+.people{display:flex;align-items:center;gap:8px;margin-top:18px}.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#343745;color:#e6d9b7;font-size:11px}.people small{color:#a9a9b3;font-size:12px}
+.split-line{display:flex;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1px solid #343741;font-size:13px}.split-line b{color:var(--mint);font-weight:600}
+.note-paper{width:100%;max-width:320px;min-height:240px;background:#eae2d2;color:#292832;border-radius:5px;padding:28px;transform:rotate(-2deg);box-shadow:0 25px 50px #0005}
+.note-paper small{font:10px "DM Mono",monospace;letter-spacing:.18em;color:#777}.note-paper p{font-size:21px;line-height:1.7;margin:24px 0 0;font-weight:500;word-break:keep-all}
+.secret-card{width:100%;max-width:320px;padding:24px;border:1px solid #4a4d58;border-radius:14px;background:#151821;text-align:center}
+.fake-barcode{height:75px;margin:18px auto;background:repeating-linear-gradient(90deg,#e4d5ae 0 2px,transparent 2px 5px,#e4d5ae 5px 6px,transparent 6px 10px);max-width:230px;opacity:.8;cursor:pointer;border:0;width:100%;display:block;padding:0;touch-action:manipulation}.fake-barcode:focus-visible{outline:2px solid var(--gold);outline-offset:5px;border-radius:4px}
+.secret-button{border:1px solid #82734f;background:transparent;color:var(--gold);border-radius:999px;padding:10px 16px;cursor:pointer;font-size:13px}
+.secret-result{display:none;color:var(--mint);font-size:14px;margin-top:16px;line-height:1.6}.secret-result.show{display:block}
+.finish{min-height:75vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;scroll-margin-top:84px;border-top:1px solid #3b3b44;padding:70px 0}
+.finish h2{font-size:clamp(2.8rem,7vw,6rem);margin-bottom:22px}.finish h2 span{color:var(--gold)}
+.finish p{max-width:600px;font-size:clamp(1.15rem,2vw,1.4rem);line-height:1.8;color:#d0ced1;word-break:keep-all}
+.finish-ticket{margin-top:28px;border:1px dashed #6d6657;border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:18px;color:var(--gold)}
+.finish-ticket strong{font:11px "DM Mono",monospace;letter-spacing:.15em;line-height:1.9;color:var(--ivory)}
+.controls{position:fixed;right:22px;bottom:22px;z-index:6;display:flex;flex-direction:column;gap:8px}
+.control{width:44px;height:44px;border:1px solid #4b4b56;border-radius:50%;background:#20222b;color:var(--ivory);cursor:pointer;font-size:18px;box-shadow:0 5px 20px #0003}
+.control:hover{border-color:var(--gold);color:var(--gold)}
+.final-link{display:flex;text-decoration:none;cursor:pointer;transition:transform .2s,border-color .2s}.final-link:hover{transform:translateY(-3px);border-color:var(--gold)}.final-link strong small{display:block;margin-top:8px;font-size:12px;letter-spacing:.08em;color:var(--gold)}
+footer{padding:24px 0 36px;display:flex;justify-content:space-between;gap:12px;color:#858590;font:10px "DM Mono",monospace;letter-spacing:.1em;border-top:1px solid #333640}
+.reveal{opacity:0;transform:translateY(35px);transition:opacity .75s ease,transform .75s cubic-bezier(.2,.7,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:700px){
+ .page{padding:0 19px}.masthead{padding:16px 0}.brand{font-size:10px}.progress{width:58px}
+ .intro{min-height:78vh;padding:60px 0}.intro-copy{margin:26px 0 30px}
+ .guide-card{min-height:unset;padding:65px 0 75px}.card-inner{grid-template-columns:1fr;gap:28px}.card-copy{padding:0}
+ h2{font-size:clamp(2rem,8vw,3rem);margin-bottom:18px}.description{font-size:1.12rem;line-height:1.9}
+ .visual{min-height:280px;border-radius:18px}.visual-symbol{width:125px;height:125px;font-size:64px}
+ .finish{min-height:75vh;padding:70px 0}.controls{right:12px;bottom:12px}.control{width:40px;height:40px}
+ .final-link{display:flex;text-decoration:none;cursor:pointer;transition:transform .2s,border-color .2s}.final-link:hover{transform:translateY(-3px);border-color:var(--gold)}.final-link strong small{display:block;margin-top:8px;font-size:12px;letter-spacing:.08em;color:var(--gold)}
+footer{font-size:8px;letter-spacing:.04em}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<main class="page">
+  <nav class="masthead">
+    <div class="brand">PASSENGERS <span>✳</span> TRAVEL GUIDE</div>
+    <div class="progress-wrap"><span id="counter">INTRO / 06</span><div class="progress"><div class="progress-bar" id="progress"></div></div></div>
+  </nav>
+
+  <section class="intro" id="intro">
+    <div class="kicker">A little guide for your journey</div>
+    <h1>Travel light.<span>Settle easy.</span></h1>
+    <p class="intro-copy">여행은 마음껏 즐기고,<br><strong>정산은 간편하게.</strong><br>스크롤하며 주요 기능을 확인해 보세요.</p>
+    <button class="start" onclick="document.querySelector('#item-1').scrollIntoView({behavior:'smooth'})">여행 안내 시작하기 <b>↓</b></button>
+  </section>
+
+  <section class="cards">
+    <article class="guide-card reveal" id="item-1" data-step="01">
+      <div class="card-inner">
+        <div class="card-copy"><div class="eyebrow">01 <span>/</span> EXPENSES</div><h2>지출은 기록하고,<br>실수는 바로 지우세요.</h2><p class="description">돈을 썼다면 <strong>+ 버튼으로 기록하세요.</strong></p><p class="note">잘못 입력한 내역은 ✕ 버튼으로 삭제할 수 있어요.</p></div>
+        <div class="visual"><div class="visual-symbol">＋</div><div class="visual-caption"><span>QUICK ENTRY</span><span>01 / 06</span></div></div>
+      </div>
+    </article>
+
+    <article class="guide-card reveal" id="item-2" data-step="02">
+      <div class="card-inner">
+        <div class="card-copy"><div class="eyebrow">02 <span>/</span> CURRENCY</div><h2>메인의 총 금액을 누르면<br>통화가 전환되어요.</h2><p class="note">환율도 실시간으로 반영되어요.</p></div>
+        <div class="visual"><div class="demo"><div class="demo-label">TOTAL EXPENSE</div><button class="demo-total" id="currencyToggle" type="button" aria-label="금액을 눌러 통화 전환"><span id="currencyAmount">€ 248.50</span><span class="currency-sync" aria-hidden="true">↻</span></button><div class="demo-sub" id="currencySub">한화 약 ₩ 367,780</div></div><div class="visual-caption"><span>LIVE EXCHANGE</span><span>02 / 06</span></div></div>
+      </div>
+    </article>
+
+    <article class="guide-card reveal" id="item-3" data-step="03">
+      <div class="card-inner">
+        <div class="card-copy"><div class="eyebrow">03 <span>/</span> SPLIT</div><h2>누가 누구에게 보낼지<br>언제든 확인하세요.</h2><p class="note">Split 탭에서 정산 내역은 언제든지 확인할 수 있어요.</p></div>
+        <div class="visual"><div class="demo"><div class="demo-label">SETTLEMENT SUMMARY</div><div class="split-line"><span>Alex → Mina</span><b>€ 24.50</b></div><div class="split-line"><span>Mina → You</span><b>€ 12.00</b></div><div class="split-line"><span>You → Alex</span><b>€ 8.20</b></div><div class="demo-sub" style="margin-top:18px">현재 기준 정산 요약 · 예시 화면</div></div><div class="visual-caption"><span>ALWAYS IN SYNC</span><span>03 / 06</span></div></div>
+      </div>
+    </article>
+
+    <article class="guide-card reveal" id="item-4" data-step="04">
+      <div class="card-inner">
+        <div class="card-copy"><div class="eyebrow">04 <span>/</span> PRIVATE NOTES</div><h2>여행의 순간을<br>나만의 메모에 담아보세요.</h2><p class="note">메모는 나만 볼 수 있어요.</p></div>
+        <div class="visual"><div class="note-paper"><small>TRAVEL NOTES · TODAY</small><p>그 골목의 작은 카페.<br>다음에 꼭 다시 오기 ☕</p></div><div class="visual-caption"><span>JUST FOR YOU</span><span>04 / 06</span></div></div>
+      </div>
+    </article>
+
+    <article class="guide-card reveal" id="item-5" data-step="05">
+      <div class="card-inner">
+        <div class="card-copy"><div class="eyebrow">05 <span>/</span> A LITTLE SECRET</div><h2>바코드에 숨겨진<br>작은 비밀을 찾아보세요.</h2><p class="note">눌러보면 뜻밖의 즐거움을 발견할지 몰라요.</p></div>
+        <div class="visual"><div class="secret-card"><div class="demo-label">YOUR PERSONAL CODE</div><button class="fake-barcode" id="barcodeTrigger" type="button" aria-label="바코드를 눌러 숨겨진 메시지 보기"></button><div class="secret-button">바코드 눌러보기 ↗</div><div class="secret-result" id="secretResult" role="status" aria-live="polite">BaNana !!🍌 🍌 🍌</div></div><div class="visual-caption"><span>HIDDEN DETAIL</span><span>05 / 06</span></div></div>
+      </div>
+    </article>
+  </section>
+
+  <section class="finish reveal" id="item-6" data-step="06">
+    <div class="kicker">06 / BON VOYAGE</div>
+    <h2>즐겁게 여행하고,<br><span>정산은 앱에게.</span></h2>
+    <p>여행은 마음껏 즐기세요.<br>기록과 정산은 앱에 맡기고, 좋은 기억만 챙겨가세요. ✈️</p>
+    <a class="finish-ticket final-link" href="https://neoneo3817.github.io/travel-paws/" target="_blank" rel="noopener noreferrer" aria-label="여행 정산 앱 열기"><span style="font-size:26px">✈</span><strong>TRAVEL PAWS<br><small>여행 정산 앱 열기 ↗</small></strong></a>
+  </section>
+  <footer><span>PASSENGERS · TRAVEL SETTLEMENT</span><span>GOOD TRAVEL, BETTER MEMORIES.</span></footer>
+</main>
+<div class="controls" aria-label="페이지 이동"><button class="control" id="prev" aria-label="이전 항목">↑</button><button class="control" id="next" aria-label="다음 항목">↓</button></div>
+<script>
+const sections=[document.querySelector('#intro'),...document.querySelectorAll('[data-step]')];
+const counter=document.querySelector('#counter'),bar=document.querySelector('#progress');
+let active=0;
+function updateActiveSection(){
+  const referenceY=window.innerHeight*0.42;
+  let nearestIndex=0,nearestDistance=Infinity;
+  sections.forEach((section,index)=>{
+    const rect=section.getBoundingClientRect();
+    const distance=Math.abs((rect.top+Math.min(rect.height,window.innerHeight)*0.35)-referenceY);
+    if(distance<nearestDistance){nearestDistance=distance;nearestIndex=index;}
+  });
+  active=nearestIndex;
+  counter.textContent=(active===0?'INTRO':String(active).padStart(2,'0'))+' / 06';
+  bar.style.width=(active===0?0:active/6*100)+'%';
+}
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.classList.add('visible');
+  });
+},{threshold:0.08,rootMargin:'0px 0px -5% 0px'});
+sections.forEach(s=>io.observe(s));
+let scrollTick=false;
+window.addEventListener('scroll',()=>{
+  if(!scrollTick){
+    window.requestAnimationFrame(()=>{updateActiveSection();scrollTick=false;});
+    scrollTick=true;
+  }
+},{passive:true});
+window.addEventListener('resize',updateActiveSection,{passive:true});
+document.querySelector('#next').addEventListener('click',()=>{
+  const target=sections[Math.min(active+1,sections.length-1)];
+  target.scrollIntoView({behavior:'smooth',block:'start'});
+});
+document.querySelector('#prev').addEventListener('click',()=>{
+  const target=sections[Math.max(active-1,0)];
+  target.scrollIntoView({behavior:'smooth',block:'start'});
+});
+updateActiveSection();
+let won=false;
+document.querySelector('#currencyToggle').addEventListener('click',()=>{
+  won=!won;
+  document.querySelector('#currencyAmount').textContent=won?'₩ 367,780':'€ 248.50';
+  document.querySelector('#currencySub').textContent=won?'현지 통화 약 € 248.50':'한화 약 ₩ 367,780';
+});
+function revealSecret(){
+ const result=document.querySelector('#secretResult');
+ result.classList.toggle('show');
+}
+document.querySelector('#barcodeTrigger').addEventListener('click',revealSecret);
+</script>
+</body>
+</html>
