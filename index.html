@@ -1,4 +1,12 @@
 <!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Travel Pass</title>
+<meta name="theme-color" content="#08152b">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Travel Pass">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
@@ -326,6 +334,7 @@ input[type=checkbox]{width:20px;height:20px;padding:0;margin:0;accent-color:var(
   <div class="info-row"><span>RATE</span><b id="rateInfo"></b></div>
   <div class="info-row"><span>STORAGE</span><b id="modeInfo"></b></div>
   <button class="btn" style="margin-top:14px" onclick="changeTrip()">여행지 변경</button>
+  <button class="btn" id="installBtn" style="margin-top:10px;display:none" onclick="installApp()">앱 설치</button>
  </div>
  <div class="card sched" id="itinCard">
   <h3>ITINERARY</h3>
@@ -947,6 +956,18 @@ function toggleNotes(){
   noteArrow.innerText=open?'▲':'▼';
   if(open)syncNotes(true);
 }
+
+/* ---------- 앱 설치 (PWA) ---------- */
+let installEv=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEv=e;installBtn.style.display='block'});
+window.addEventListener('appinstalled',()=>{installEv=null;installBtn.style.display='none';toast('앱이 설치됐어요')});
+async function installApp(){
+  if(!installEv)return;
+  installEv.prompt();
+  try{await installEv.userChoice}catch(e){}
+  installEv=null;installBtn.style.display='none';
+}
+if('serviceWorker' in navigator)window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{})});
 
 /* ---------- 초기화 ---------- */
 modeInfo.innerText=REMOTE?'SUPABASE':'LOCAL (미설정)';
